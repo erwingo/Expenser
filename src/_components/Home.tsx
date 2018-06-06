@@ -6,7 +6,7 @@ import DialogPicker from './DialogPicker'
 import List from './List'
 import Button from './Button'
 import DateFilter, { IDateFilter } from './DateFilter'
-import { convertToPriceFormat } from '../_helpers/formatter'
+import { convertToPriceFormat, convertToDateFormat } from '../_helpers/formatter'
 
 import { ICategory, IExpense } from '../_models'
 
@@ -19,12 +19,10 @@ const dummyCategories: ICategory[] = [
   { id: 6, name: 'Duties' },
   { id: 7, name: 'Fun' },
   { id: 8, name: 'Drinks' },
-]
-
-const dummyExpenses: IExpense[] = [
-  { id: 1, category: 1, isoDate: (new Date()).toISOString() },
-  { id: 2, category: 2, isoDate: (new Date()).toISOString() },
-  { id: 3, category: 3, isoDate: (new Date()).toISOString() },
+  { id: 9, name: 'Grooming' },
+  { id: 10, name: 'Health' },
+  { id: 11, name: 'Beauty' },
+  { id: 12, name: 'Home Appliances' },
 ]
 
 const styles = StyleSheet.create({
@@ -59,6 +57,7 @@ interface IState {
   isModalOpened: boolean,
   dateFilter?: IDateFilter,
   isFilterDateModalOpened: boolean,
+  expenses: IExpense[],
 }
 
 export default class Home extends React.Component<{}, IState> {
@@ -66,6 +65,14 @@ export default class Home extends React.Component<{}, IState> {
     currentValue: 0,
     isModalOpened: false,
     isFilterDateModalOpened: false,
+    expenses: [
+      { id: 1, category: 1, price: 4000, isoDate: (new Date()).toISOString() },
+      { id: 2, category: 2, price: 2300, isoDate: (new Date()).toISOString() },
+      { id: 3, category: 3, price: 250000, isoDate: (new Date()).toISOString() },
+      { id: 4, category: 3, price: 250000, isoDate: (new Date()).toISOString() },
+      { id: 5, category: 3, price: 250000, isoDate: (new Date()).toISOString() },
+      { id: 6, category: 3, price: 10, isoDate: (new Date()).toISOString() },
+    ]
   }
 
   handleBtnClick = (key: string, value?: number) => {
@@ -89,8 +96,23 @@ export default class Home extends React.Component<{}, IState> {
     this.setState({ ...this.state, isModalOpened: false, isFilterDateModalOpened: false })
   }
 
-  handleItemClick = (id: number) => {
-    this.setState({ ...this.state, isModalOpened: false })
+  handleCategorySelected = (id: number) => {
+    if (this.state.currentValue > 0) {
+      this.setState({
+        ...this.state,
+        isModalOpened: false,
+        currentValue: 0,
+        expenses: [
+          ...this.state.expenses,
+          {
+            id: this.state.expenses.length + 3,
+            price: this.state.currentValue,
+            category: id,
+            isoDate: (new Date()).toISOString()
+          }
+        ]
+      })
+    }
   }
 
   handleFilterSelected = (filter: IDateFilter) => {
@@ -112,6 +134,12 @@ export default class Home extends React.Component<{}, IState> {
         />
 
         <List
+          items={this.state.expenses.map(el => ({
+            id: el.id,
+            text: convertToDateFormat(el.isoDate) + ' - ' +
+            convertToPriceFormat(el.price) + ' - ' +
+            dummyCategories.find(el2 => el2.id === el.category)!.name
+          }))}
           style={{ flex: 10 }}
         />
 
@@ -156,7 +184,7 @@ export default class Home extends React.Component<{}, IState> {
 
         <DialogPicker
           isOpened={this.state.isModalOpened}
-          onItemClick={this.handleItemClick}
+          onItemClick={this.handleCategorySelected}
           onRequestClose={this.closeModal}
           elements={dummyCategories}
         />

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 // @ts-ignore
 const ItemView = styled.View`
   background-color: #333;
-  height: 100px;
+  height: 70px;
   border-bottom-color: #666;
   border-bottom-width: 1px;
   align-items: center;

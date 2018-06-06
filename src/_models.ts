@@ -6,6 +6,7 @@ export interface ICategory {
 
 export interface IExpense {
   id: number,
+  price: number,
   category: ICategory['id'],
   isoDate: string,
   details?: string,

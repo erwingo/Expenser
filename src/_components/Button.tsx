@@ -19,7 +19,6 @@ const ItemContent = styled.View`
 // @ts-ignore
 const ItemText = styled.Text`
   color: #fff;
-  font-family: Arial;
   font-size: 30px;
 `
 
@@ -42,7 +41,7 @@ interface IProps {
   onClick: (name: string) => void,
 }
 
-export default class Button extends React.Component<IProps> {
+export default class Button extends React.PureComponent<IProps> {
   state = {
     isPressed: false
   }

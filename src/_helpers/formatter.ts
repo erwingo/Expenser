@@ -1,3 +1,6 @@
+// @ts-ignore
+import numeral from 'numeral'
+
 function always2DigitNumber(number: number) {
   if (number >= 10) { return '' + number; }
   return '0' + number;
@@ -12,18 +15,16 @@ function hour24ToAmPm(hour: number) {
 
 export function convertToPriceFormat(number?: number) {
   if (number === undefined) { return '-'; }
-  return '$' + number.toLocaleString();
+  return numeral(number).format('$0,0');
 }
 
 export function convertToDateFormat(isoDate: string) {
   const date = new Date(isoDate);
-  const hourAmPm = hour24ToAmPm(date.getHours());
 
   const year = always2DigitNumber(date.getFullYear());
   const month = always2DigitNumber(date.getMonth() + 1);
   const day = always2DigitNumber(date.getDate());
-  const hour = always2DigitNumber(hourAmPm.hour);
+  const hour = always2DigitNumber(date.getHours());
   const min = always2DigitNumber(date.getMinutes());
-  const sec = always2DigitNumber(date.getSeconds());
-  return `${year}-${month}-${day} ${hour}:${min}:${sec} ${hourAmPm.time}`
+  return `${year}-${month}-${day} ${hour}:${min}`
 }

@@ -1,5 +1,7 @@
 import React from 'react'
 import { View, ScrollView, Text, StyleSheet } from 'react-native'
+import { IExpense } from '../_models'
+import { IpcNetConnectOpts } from 'net';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -16,15 +18,26 @@ const styles = StyleSheet.create({
 
 interface IProps {
   style?: any,
+  items: { id: number, text: string }[],
 }
 
-export default class List extends React.Component<IProps> {
+export default class List extends React.PureComponent<IProps> {
+  sc: any = undefined
+
+  handleScrollSizeChange = () => {
+    this.sc.scrollToEnd({ animated: false })
+  }
+
   render() {
     return (
-      <ScrollView style={[styles.scrollView, this.props.style]}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((el, idx) =>
-          <View style={styles.itemView} key={el}>
-            <Text style={styles.itemText}>$9,000 Taxi - 2018-05-26 23:44:05</Text>
+      <ScrollView
+        style={[styles.scrollView, this.props.style]}
+        ref={sc => this.sc = sc }
+        onContentSizeChange={this.handleScrollSizeChange}
+      >
+        {this.props.items.map((el, idx) =>
+          <View style={styles.itemView} key={el.id}>
+            <Text style={styles.itemText}>{el.text}</Text>
           </View>
         )}
       </ScrollView>
